@@ -17,14 +17,14 @@
     $create_account = $store->createAccount($username,$password);
 
     if($create_account == true){
-        $user->createUser($first_name,$last_name,$address,$email,$contact_number);
+        $store->createUser($first_name,$last_name,$address,$email,$contact_number);
     }
 
   }elseif(isset($_POST['login'])){
     $username = $_POST['username'];
     $password = md5($_POST['password']);
 
-    $user->login($username, $password);
+    $store->login($username, $password);
   }elseif(isset($_POST['submit'])){
     $item_name = $_POST['product_name'];
     $Price = $_POST['price'];
@@ -49,7 +49,22 @@
     $user_id = $_POST['user_id'];
 
     $see_cart = $store->see_cart($product_name,$product_price,$user_id);
+  }elseif(isset($_POST['finalize_buy'])){
+    $item = $_SESSION['cart'];
+    echo "<pre>";
+    print_r($item);
+    echo "</pre>";
+    foreach($item as $row){
+
+      $store->change_item_status($row['item_id']);
+    }
+    header("location:receipt.php");
+  
+
   }
+  // elseif(isset($_POST['buy'])){
+  //   $result = $store->productlist($_SESSION['user_id']);
+  // }
 
 
 ?>

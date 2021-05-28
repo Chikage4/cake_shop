@@ -12,11 +12,11 @@
   <body>
   <div class="container">
         <div class="card mx-auto w-50 my-5 border-0">
-            <div class="card-header bg-white border-0 text-info">
+            <div class="card-header bg-light border-0 text-info">
                 <h1 class="text-center">REGISTER</h1>
             </div>
 
-            <div class="card-body">
+            <div class="card-body bg-light">
                 <form action="storeAction.php" method="post">
                     <div class="form-row mt-4">
                         <div class="form-group col-md-6">

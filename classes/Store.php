@@ -51,6 +51,77 @@ class Store extends Database
       return "Invalid Credentials";
     }
   }
+  public function display_users(){
+    $sql = "SELECT * FROM users INNER JOIN accounts WHERE users.account_id = accounts.account_id";
+    $result = $this->conn->query($sql);
+    if($result->num_rows>0){
+      $container = array();
+      while($row = $result->fetch_assoc()){
+        $container[] = $row;
+      }
+      return $container;
+    }else{
+      return false;
+    }
+}
+
+public function delete_user($id){
+  $sql = "DELETE  users,accounts FROM users  INNER JOIN accounts ON users.account_id = accounts.account_id WHERE users.account_id = $id";
+  $result = $this->conn->query($sql);
+
+  if($result == TRUE){
+    header('location: profile.php');
+  }else{
+    die("ERROR: ".$this->conn->error);
+  }
+}
+public function get_user_data($id){
+   $sql = "SELECT * FROM users INNER JOIN accounts ON users.account_id = accounts.account_id WHERE users.account_id = '$id'";
+   $result = $this->conn->query($sql);
+
+   if($result == TRUE){
+     return $result->fetch_assoc();
+   }else{
+     die('ERROR: '.$this->conn->error);
+   }
+}
+public function update_user($first_name,$last_name,$address,$email,$contact_number,$id){
+  $sql = "UPDATE users SET first_name = '$first_name',last_name = '$last_name',address = '$address',email = '$email', contact_number = '$contact_number' WHERE user_id ='$id'";
+
+  $result = $this->conn->query($sql);
+  if($result == TRUE){
+    header('location: profile.php');
+  }else{
+      die('ERROR '.$this->conn->error);
+
+  }
+}
+
+public function update_account($username,$password,$id){
+  $sql = "UPDATE accounts SET username = '$username', password ='$password' WHERE account_id = '$id'";
+
+  $result = $this->conn->query($sql);
+  if($result == TRUE){
+      return TRUE;
+  }else{
+      die('ERROR '.$this->conn->error);
+  }
+}
+
+
+public function update_account_user($first_name,$last_name,$address,$email,$contact_number,$username,$password,$id){
+  $sql = "UPDATE users,accounts INNER JOIN accounts ON users.account_id = accounts.account_id SET users.first_name = '$first_name',users.last_name = '$last_name',users.address = '$address',users.email = '$email',users.contact_number = '$contact_number',accounts.username = '$username',accouns.password = '$password' WHERE users.user_id = '$id'";
+
+  $result = $this->conn->query($sql);
+  if($result == TRUE){
+    header('location: profile.php');
+  }else{
+      die('ERROR '.$this->conn->error);
+
+  }
+}
+
+
   public function add_item($item_name,$Price,$description){
     $sql = "INSERT INTO products(product_name, price, description) VALUES('$item_name','$Price','$description')";
 
@@ -77,14 +148,45 @@ class Store extends Database
      $sql = "INSERT INTO cart(product_name,product_price,user_id) VALUES ('$product_name','$product_price','$user_id')";
 
      if($this->conn->query($sql)){
-      header("Location:cart.php");
+      //header("Location:http://localhost/e-commerce/cart.php");
       echo "<div class = 'alert alert-success'>Added to cart Successfully</div>";
      }else{
        die("CANNOT ADD USER: " .$this->conn->error);
      }
    }
-   public function see_cart(){
-    $sql = "SELECT * FROM cart";
+   public function see_cart($user_id){
+    $sql = "SELECT * FROM cart WHERE user_id ='$user_id' AND status = 'cart'";
+    $result = $this->conn->query($sql);
+    if($result->num_rows>0){
+      $container = array();
+      while($row = $result->fetch_assoc()){
+        $container[] = $row;
+      }
+      return $container;
+    }else{
+      die('ERROR '.$this->conn->error);
+    }
+   }
+   
+ 
+  public function confirmation($user_id){
+     $sql = "INSERT INTO product_all(product_name,product_price,user_id) SELECT product_name,product_price,user_id FROM cart where user_id = '$user_id'";
+
+     if($this->conn->query($sql)){
+       $sql_delete = "DELETE FROM cart where user_id = '$user_id'";
+       if($this->conn->query($sql_delete)){
+        // header("Location:http://localhost/e-commerce/cart.php");
+        // echo "<div class = 'alert alert-success'>Added to cart Successfully</div>";
+        return true;
+       }else{
+        die("CANNOT ADD USER: " .$this->conn->error);
+       }
+     }else{
+       die("CANNOT ADD USER: " .$this->conn->error);
+     }
+   }
+   public function productall($user_id){
+    $sql = "SELECT * FROM cart WHERE user_id ='$user_id'";
     $result = $this->conn->query($sql);
     if($result->num_rows>0){
       $container = array();
@@ -96,5 +198,29 @@ class Store extends Database
       return false;
     }
    }
+   public function change_item_status($id){
+      $sql = "UPDATE cart SET status='paid' WHERE item_id = '$id'";
+      $result = $this->conn->query($sql);
+
+      if($result == FALSE ){
+        die("ERROR: ". $this->conn->error);
+
+      }
+
+   }
+   public function see_paid($user_id){
+    $sql = "SELECT * FROM cart WHERE user_id ='$user_id' AND status = 'paid'";
+    $result = $this->conn->query($sql);
+    if($result->num_rows>0){
+      $container = array();
+      while($row = $result->fetch_assoc()){
+        $container[] = $row;
+      }
+      return $container;
+    }else{
+      die('ERROR '.$this->conn->error);
+    }
+   }
   
-}
+  }
+

@@ -20,17 +20,17 @@
                 <form action="storeAction.php" method="post">
                     <div class="form-row mt-4">
                         <div class="form-group col-md-6">
-                            <input type="text" name="item_name" placeholder="Item Name" class="form-control p-4" required>
+                            <input type="text" name="product_name" placeholder="Item Name" class="form-control p-4" required>
                         </div>
 
                         <div class="form-group col-md-6">
-                            <input type="number" name="item_price" placeholder="Price" class="form-control p-4" required>
+                            <input type="number" name="price" placeholder="Price" class="form-control p-4" required>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-md-12">
-                            <input type="text" name="item_description" placeholder="description" class="form-control p-4" required>
+                            <input type="text" name="description" placeholder="description" class="form-control p-4" required>
                         </div>
                     </div>
                     <div class="form-row">
